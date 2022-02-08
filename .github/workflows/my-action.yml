@@ -13,4 +13,6 @@ jobs:
           fetch-depth: 0
           submodules: true
       - name: Execute script
-        run: sudo ./my-script.sh
+        run: |
+          chmod +x ./my-script.sh
+          sudo ./my-script.sh
