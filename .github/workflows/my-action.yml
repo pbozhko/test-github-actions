@@ -12,9 +12,5 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      - name: Print env
-        run: |
-          pwd
-          ls -la
       - name: Execute script
-        run: ./my-script.sh
+        run: sudo ./my-script.sh
