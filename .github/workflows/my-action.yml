@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      - name: Parse casbin config file
+      - name: Prepare content
         run: |
           declare -a PERMITS_ARRAY
           while read -r line; do
@@ -26,7 +26,15 @@ jobs:
               PERMITS_ARRAY+=("${permit_line[1]}" "${permit_line[3]}" "${permit_line[4]}")
             fi
           done <"$CASBINCSV_CONFIG_FILE"
-          echo "PERMITS_ARRAY=${PERMITS_ARRAY[@]}" >> $GITHUB_ENV
+          DATA_ROWS=""
+          INDEX="1"
+          for i in ${PERMITS_ARRAY[@]}; do
+            DATA_ROWS+="<tr><td>$INDEX</td><td>${i[0]}</td><td>${i[1]}</td><td>${i[2]}</td></tr>";
+            INDEX=$((INDEX+1))
+          done
+          HEADER_ROW="<tr><th>#<b></b></th><th><b>Role</b></th><th><b>Scope</b></th><th><b>Permit</b></th></tr>"
+          TABLE_CONTENT="<table><thead>$HEADER_ROW</thead><tbody>$DATA_ROWS</tbody></table>"
+          echo "TABLE_CONTENT=$TABLE_CONTENT" >> $GITHUB_ENV
       - name: Get current page info
         run: |
           RESPONSE=$(curl -s -X GET \
@@ -39,17 +47,6 @@ jobs:
           echo "NEW_PAGE_VERSION=$NEW_PAGE_VERSION" >> $GITHUB_ENV
           echo "SPACE=$SPACE" >> $GITHUB_ENV
           echo "PAGE_TITLE=$PAGE_TITLE" >> $GITHUB_ENV
-      - name: Prepare content
-        run: |
-          DATA_ROWS=""
-          INDEX="1"
-          for i in ${PERMITS_ARRAY[@]}; do
-            DATA_ROWS+="<tr><td>$INDEX</td><td>${i[0]}</td><td>${i[1]}</td><td>${i[2]}</td></tr>";
-            INDEX=$((INDEX+1))
-          done
-          HEADER_ROW="<tr><th>#<b></b></th><th><b>Role</b></th><th><b>Scope</b></th><th><b>Permit</b></th></tr>"
-          TABLE_CONTENT="<table><thead>$HEADER_ROW</thead><tbody>$DATA_ROWS</tbody></table>"
-          echo "TABLE_CONTENT=$TABLE_CONTENT" >> $GITHUB_ENV
       - name: Update page
         run: |
           curl -X PUT \
