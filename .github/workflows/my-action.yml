@@ -1,10 +1,15 @@
-name: Manual workflow
+name: "Update-roles-and-permissions-docs"
 
 on:
   workflow_dispatch:
     inputs: { }
+env:
+  CONFLUENCE_PAGE_ID: "262277"
+  CASBINCSV_CONFIG_FILE: "./test-service/src/main/resources/rbac.casbincsv"
+  AUTH_TOKEN: "cC5ib3poa285MkBtYWlsLnJ1OlR6REJ3eWxodXVCUHZXTUJwRVE4NTA4Nw=="
+  API_PATH: "https://pbozhko.atlassian.net"
 jobs:
-  prepare_content:
+  update-roles-and-permissions-docs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -12,7 +17,55 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      - name: Execute script
+      - name: Parse casbin config file
         run: |
-          chmod +x ./my-script.sh
-          sudo ./my-script.sh
+          declare -a PERMITS_ARRAY
+          while read -r line; do
+            if [[ ${#line} -gt 0 ]] && ! [[ "$line" =~ ^# ]]; then
+              IFS=', ' read -r -a permit_line <<<"$line"
+              PERMITS_ARRAY+=("${permit_line[1]}" "${permit_line[3]}" "${permit_line[4]}")
+            fi
+          done <"$CASBINCSV_CONFIG_FILE"
+          echo "PERMITS_ARRAY=$PERMITS_ARRAY" >> $GITHUB_ENV
+      - name: Get current page info
+        run: |
+          RESPONSE=$(curl -s -X GET \
+            -H "Authorization: Basic $AUTH_TOKEN" \
+            "$API_PATH/wiki/rest/api/content/$confluence_page_id?expand=version,space")
+          PAGE_VERSION=$(jq -r '.version.number' <<<"$RESPONSE")
+          SPACE=$(jq -r '.space.key' <<<"$response")
+          PAGE_TITLE=$(jq -r '.title' <<<"$response")
+          NEW_PAGE_VERSION=$((PAGE_VERSION + 1))
+          echo "NEW_PAGE_VERSION=$NEW_PAGE_VERSION" >> $GITHUB_ENV
+          echo "SPACE=$SPACE" >> $GITHUB_ENV
+          echo "PAGE_TITLE=$PAGE_TITLE" >> $GITHUB_ENV
+      - name: Prepare content
+        run: |
+          DATA_ROWS=""
+          INDEX="1"
+          for i in ${PERMITS_ARRAY[@]}; do
+            DATA_ROWS+="<tr><td>$INDEX</td><td>${i[0]}</td><td>${i[1]}</td><td>${i[2]}</td></tr>";
+            INDEX=$((INDEX+1))
+          done
+          HEADER_ROW="<tr><th>#<b></b></th><th><b>Role</b></th><th><b>Scope</b></th><th><b>Permit</b></th></tr>"
+          TABLE_CONTENT="<table><thead>$HEADER_ROW</thead><tbody>$DATA_ROWS</tbody></table>"
+          echo "TABLE_CONTENT=$TABLE_CONTENT" >> $GITHUB_ENV
+      - name: Update page
+        run: |
+          curl -X PUT \
+            -H "Authorization: Basic $AUTH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+                      \"id\":\"$CONFLUENCE_PAGE_ID\",
+                      \"type\":\"page\",
+                      \"title\":\"$PAGE_TITLE\",
+                      \"version\":{\"number\":\"$NEW_PAGE_VERSION\"},
+                      \"space\":{\"key\":\"$SPACE\"},
+                      \"body\":{
+                          \"storage\":{
+                              \"value\":\"$TABLE_CONTENT\",
+                              \"representation\":\"storage\"
+                          }
+                      }
+                   }" \
+            "$API_PATH/wiki/rest/api/content/$CONFLUENCE_PAGE_ID"
