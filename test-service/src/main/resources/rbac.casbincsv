@@ -1,0 +1,338 @@
+# super admin can do anything anywhere, without explicit permissions
+p, super_admin, *, *, *
+
+# legend
+# [x] - assigned permissions to role
+# [~] - needs more backend code, work in progress
+# [!] - dm feature, or something not started yet
+
+# new global role - mb_admin
+# [x] can manage orgs
+# [!] can move devices between orgs, provisioning - this is a dm feature
+# [x] can manage vehicles
+# [!] can manage vehicle groups - not implemented
+# [~] can assign devices to vehicles
+# [!] invite org manager - invites are not working, not sure what org manager role is
+# user-service
+p, mb_admin, *, /user/, manage
+p, mb_admin, *, /user/, manage_mfa
+p, mb_admin, *, /user/, resend_invitation
+p, mb_admin, *, /user/password/, write
+p, mb_admin, *, /organization/, read
+p, mb_admin, *, /organization/, write
+p, mb_admin, *, /organization/, create
+p, mb_admin, *, /organization/, edit
+p, mb_admin, *, /organization/, delete
+p, mb_admin, *, /audit-event/, read
+p, mb_admin, *, /agreements/, manage
+p, mb-admin, *, /one-time-code/, read
+p, mb_admin, *, /settings/, read
+p, mb_admin, *, /settings/, write
+# user-service roles
+p, mb_admin, *, /org-roles/, sync
+p, mb_admin, *, /role/mb_admin/, grant
+p, mb_admin, *, /role/mb_admin/, revoke
+p, mb_admin, *, /role/approval_manager/, grant
+p, mb_admin, *, /role/approval_manager/, revoke
+p, mb_admin, *, /role/developer/, grant
+p, mb_admin, *, /role/developer/, revoke
+p, mb_admin, *, /role/developer_manager/, grant
+p, mb_admin, *, /role/developer_manager/, revoke
+p, mb_admin, *, /role/consumer_manager/, grant
+p, mb_admin, *, /role/consumer_manager/, revoke
+p, mb_admin, *, /role/technical_coordinator/, grant
+p, mb_admin, *, /role/technical_coordinator/, revoke
+p, mb_admin, *, /role/technical_coordinator_global/, grant
+p, mb_admin, *, /role/technical_coordinator_global/, revoke
+p, mb_admin, *, /role/upfitter/, grant
+p, mb_admin, *, /role/upfitter/, revoke
+p, mb_admin, *, /role/release_manager/, grant
+p, mb_admin, *, /role/release_manager/, revoke
+p, mb_admin, *, /role/campaign_manager/, grant
+p, mb_admin, *, /role/campaign_manager/, revoke
+# developer-service
+p, mb_admin, *, /software-validation-request/, read
+p, mb_admin, *, /software-validation-request/, write
+p, mb_admin, *, /software-validation-request/, delete
+p, mb_admin, *, /software-validation-request/, download-attachment
+p, mb_admin, *, /software-validation-request/, download-report
+p, mb_admin, *, /packages/, sign
+
+# fleet-service
+p, mb_admin, *, /fleets/, read
+p, mb_admin, *, /vehicles/, read
+p, mb_admin, *, /vehicles/, write
+p, mb_admin, *, /health-check/, add
+p, mb_admin, *, /health-check/, view
+p, mb_admin, *, /health-check/, delete
+p, mb_admin, *, /software-config/, create
+p, mb_admin, *, /software-config/, read
+p, mb_admin, *, /software-config/, push
+p, mb_admin, *, /inst-group/, read
+p, mb_admin, *, /inst-group/, write
+p, mb_admin, *, /iot-requisites/, read
+p, mb_admin, *, /provisioning-configuration-templates/, list
+p, mb_admin, *, /provisioning-configuration-templates/, get
+p, mb_admin, *, /provisioning-configuration-templates/, create
+p, mb_admin, *, /provisioning-configuration-templates/, update
+p, mb_admin, *, /provisioning-configuration-templates/, activatie
+p, mb_admin, *, /provisioning-configuration-templates/, delete
+
+# developer-service
+p, mb_admin, *, /software-signing-keys/, read
+p, mb_admin, *, /software-signing-keys/, read-all
+p, mb_admin, *, /software-signing-keys/, write
+p, mb_admin, *, /software-signing-keys/, download
+p, mb_admin, *, /software-signing-keys/, bind
+p, mb_admin, *, /software-signing-keys/, unbind
+p, mb_admin, *, /software-upload-requests/, read
+p, mb_admin, *, /software-upload-requests/, write
+p, mb_admin, *, /firmware-config/, read
+p, mb_admin, *, /firmware-config/, write
+p, mb_admin, *, /firmware-config/, install
+p, mb_admin, *, /deprecation-status/, write
+p, mb_admin, *, /olu-release/, read
+p, mb_admin, *, /olu-release/, write
+p, mb_admin, *, /molex-release/, read
+p, mb_admin, *, /molex-release/, write
+
+# dm
+p, mb_admin, *, /devices/, read
+p, mb_admin, *, /devices/, write
+p, mb_admin, *, /devices/, delete
+p, mb_admin, *, /devices/, assign-org
+p, mb_admin, *, /devices/, provision
+p, mb_admin, *, /devices/, connectivity-status
+p, mb_admin, *, /device-groups/, read
+p, mb_admin, *, /device-groups/, write
+p, mb_admin, *, /provisioning-configuration-template/, read
+p, mb_admin, *, /provisioning-config/, read
+p, mb_admin, *, /provisioning-config/, write
+p, mb_admin, *, /provisioning/, read
+p, mb_admin, *, /software/, read
+p, mb_admin, *, /software/, write
+
+#
+p, release_manager, *, /organization/, read
+p, release_manager, *, /molex-release/, read
+p, release_manager, *, /molex-release/, write
+p, release_manager, *, /olu-release/, read
+p, release_manager, *, /olu-release/, write
+p, release_manager, *, /software/, read
+
+# new org role - technical_coordinator
+# [x] can manage vehicles
+# [x] can assign technical_coordinator, developer_manager, consumer_manager roles
+# [~] can assign devices to vehicles
+# [!] can manage devices groups - this is a dm feature
+# [!] can invite developer_manager and consumer_manager users - invites are not working at the moment
+# user-service
+p, technical_coordinator, *, /user/, manage
+p, technical_coordinator, *, /organization/, read
+p, technical_coordinator, *, /organization/, write
+p, technical_coordinator, *, /organization/, edit
+# user-service roles
+p, technical_coordinator, *, /role/technical_coordinator/, grant
+p, technical_coordinator, *, /role/technical_coordinator/, revoke
+p, technical_coordinator, *, /role/technical_coordinator_global/, grant
+p, technical_coordinator, *, /role/technical_coordinator_global/, revoke
+p, technical_coordinator, *, /role/developer_manager/, grant
+p, technical_coordinator, *, /role/developer_manager/, revoke
+p, technical_coordinator, *, /role/developer/, grant
+p, technical_coordinator, *, /role/developer/, revoke
+p, technical_coordinator, *, /role/consumer_manager/, grant
+p, technical_coordinator, *, /role/consumer_manager/, revoke
+# fleet-service
+p, technical_coordinator, *, /fleets/, read
+p, technical_coordinator, *, /vehicles/, read
+p, technical_coordinator, *, /vehicles/, write
+p, technical_coordinator, *, /dsc/, read
+p, technical_coordinator, *, /dsc/, write
+p, technical_coordinator, *, /health-check/, add
+p, technical_coordinator, *, /health-check/, view
+p, technical_coordinator, *, /health-check/, delete
+p, technical_coordinator, *, /software-config/, create
+p, technical_coordinator, *, /software-config/, read
+p, technical_coordinator, *, /software-config/, push
+p, technical_coordinator, *, /inst-group/, read
+p, technical_coordinator, *, /inst-group/, write
+p, technical_coordinator, *, /iot-requisites/, read
+p, technical_coordinator, *, /provisioning-configuration-templates/, list
+p, technical_coordinator, *, /provisioning-configuration-templates/, get
+# developer-service
+p, technical_coordinator, *, /software-signing-keys/, read
+p, technical_coordinator, *, /software-signing-keys/, read-all
+p, technical_coordinator, *, /software-signing-keys/, bind
+p, technical_coordinator, *, /software-upload-requests/, read
+p, technical_coordinator, *, /software-upload-requests/, write
+p, technical_coordinator, *, /software/, read
+p, technical_coordinator, *, /software/, write
+# dm
+p, technical_coordinator, *, /devices/, read
+p, technical_coordinator, *, /devices/, write
+p, technical_coordinator, *, /devices/, provision
+p, technical_coordinator, *, /devices/, assign-org
+p, technical_coordinator, *, /devices/, connectivity-status
+p, technical_coordinator, *, /device-groups/, read
+p, technical_coordinator, *, /device-groups/, write
+p, technical_coordinator, *, /provisioning-configuration-template/, read
+p, technical_coordinator, *, /provisioning-config/, read
+p, technical_coordinator, *, /provisioning/, read
+
+# new global role - approval_manager
+# [x] can manage software validation requests
+# [x] can assign approval_manager role
+# user-service
+p, approval_manager, *, /user/, manage
+p, approval_manager, *, /organization/, read
+# user-service roles
+p, approval_manager, *, /role/approval_manager/, grant
+p, approval_manager, *, /role/approval_manager/, revoke
+# developer-service
+p, approval_manager, *, /software/, read
+p, approval_manager, *, /software/, write
+p, approval_manager, *, /software/public/, delete
+p, approval_manager, *, /software-validation-request/, read
+p, approval_manager, *, /software-validation-request/, write
+p, approval_manager, *, /software-validation-request/, download-attachment
+p, approval_manager, *, /software-validation-request/, download-report
+
+# new org role - developer_manager
+# [!] can see orgs devices - this is a dm feature
+# [!] can manage devices groups - this is a dm feature
+# [!] can grant permissions to device groups to users - not sure how this is possible, dm feature
+# [!] can invite developer_manager and consumer_manager users - invites are not working at the moment
+# [x] can grant developer_manager and developer roles
+# [!] can create roles and manage permissions per role - planned for the future release
+# user-service
+p, developer_manager, *, /user/, manage
+p, developer_manager, *, /organization/, read
+# user-service roles
+p, developer_manager, *, /role/developer_manager/, grant
+p, developer_manager, *, /role/developer_manager/, revoke
+p, developer_manager, *, /role/developer/, grant
+p, developer_manager, *, /role/developer/, revoke
+# developer-service
+p, developer_manager, *, /software-validation-request/, read
+p, developer_manager, *, /software-validation-request/, create
+p, developer_manager, *, /software-validation-request/, delete
+p, developer_manager, *, /software-validation-request/, download-attachment
+p, developer_manager, *, /software-validation-request/, download-report
+p, developer_manager, *, /software-signing-requests/, read
+p, developer_manager, *, /software-signing-requests/, write
+p, developer_manager, *, /software-upload-requests/, read
+p, developer_manager, *, /software-upload-requests/, write
+p, developer_manager, *, /software-signing-keys/, read
+p, developer_manager, *, /packages/, sign
+# fleet-service
+p, developer_manager, *, /health-check/, view
+p, developer_manager, *, /software-config/, create
+p, developer_manager, *, /software-config/, read
+p, developer_manager, *, /software-config/, push
+p, developer_manager, *, /inst-group/, read
+p, developer_manager, *, /inst-group/, write
+p, developer_manager, *, /vehicles/, read
+# dm
+p, developer_manager, *, /devices/, read
+p, developer_manager, *, /software/, read
+p, developer_manager, *, /software/, write
+p, developer_manager, *, /software/, publish
+p, developer_manager, *, /software/test/, delete
+p, developer_manager, *, /software/organization/, delete
+p, developer_manager, *, /dsc/, read
+p, developer_manager, *, /dsc/, write
+
+# new org role - developer
+# [!] can see orgs devices - this is a dm feature
+# [!] can create sw configurations for devices - this is a dm feature
+# [!] can update firmware - this is a dm feature
+# [!] can upload to orgs test repo - this is a dm feature
+# user-service
+p, developer, *, /organization/, read
+# developer-service
+p, developer, *, /software-validation-request/, read
+p, developer, *, /software-validation-request/, create
+p, developer, *, /software-signing-requests/, read
+p, developer, *, /software-signing-requests/, write
+p, developer, *, /software-upload-requests/, read
+p, developer, *, /software-upload-requests/, write
+p, developer, *, /software-signing-keys/, read
+p, developer, *, /packages/, sign
+p, developer, *, /devices/, read
+p, developer, *, /software/, read
+p, developer, *, /software/, write
+p, developer, *, /software/test/, delete
+p, developer, *, /dsc/, read
+p, developer, *, /dsc/, write
+# fleet-service
+p, developer, *, /health-check/, view
+p, developer, *, /software-config/, create
+p, developer, *, /software-config/, read
+p, developer, *, /software-config/, push
+p, developer, *, /inst-group/, read
+p, developer, *, /inst-group/, write
+p, developer, *, /vehicles/, read
+
+# new org role - consumer_manager
+# [!] can see orgs devices - this is a dm feature
+# [x] can see vehicles
+# [x] can assign consumer_manager role
+# [!] can subscribe for applications - not al feature, not sure what it is
+# [!] can manage software on devices - this is a dm feature
+#
+# user-service
+p, consumer_manager, *, /user/, manage
+p, consumer_manager, *, /organization/, read
+# user-service roles
+p, consumer_manager, *, /role/consumer_manager/, grant
+p, consumer_manager, *, /role/consumer_manager/, revoke
+# dm
+p, consumer_manager, *, /software/, read
+p, consumer_manager, *, /software/, write
+# fleet-service
+p, consumer_manager, *, /dsc/, read
+p, consumer_manager, *, /dsc/, write
+p, consumer_manager, *, /devices/, read
+p, consumer_manager, *, /vehicles/, read
+p, consumer_manager, *, /health-check/, add
+p, consumer_manager, *, /health-check/, view
+p, consumer_manager, *, /software-config/, create
+p, consumer_manager, *, /software-config/, read
+p, consumer_manager, *, /software-config/, push
+p, consumer_manager, *, /inst-group/, read
+p, consumer_manager, *, /inst-group/, write
+p, consumer_manager, *, /software-upload-requests/, read
+p, consumer_manager, *, /software-upload-requests/, write
+p, consumer_manager, *, /iot-requisites/, read
+
+# global role - supplier
+p, supplier, *, /supplier-imports/, read
+p, supplier, *, /supplier-imports/, write
+
+# org role - upfitter
+# [!] can see orgs devices
+#
+# user-service
+p, upfitter, *, /organization/, read
+# fleet-service
+p, upfitter, *, /dsc/, read
+p, upfitter, *, /devices/, read
+p, upfitter, *, /devices/, connectivity-status
+p, upfitter, *, /vehicles/, read
+p, upfitter, *, /software-config/, read
+p, upfitter, *, /inst-group/, read
+p, upfitter, *, /software/, read
+
+# global role - campaign_manager
+p, campaign_manager, *, /organization/, read
+p, campaign_manager, *, /firmware-config/, read
+p, campaign_manager, *, /firmware-config/, write
+p, campaign_manager, *, /firmware-config/, install
+p, campaign_manager, *, /molex-release/, read
+p, campaign_manager, *, /olu-release/, read
+p, campaign_manager, *, /devices/, read
+p, campaign_manager, *, /admin-panel/devices/, read
+p, campaign_manager, *, /software/, read
+
+# global role - technical_coordinator_global - to init organization first time
+p, technical_coordinator_global, *, /organization/, create
