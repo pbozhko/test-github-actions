@@ -7,5 +7,9 @@ jobs:
   prepare_content:
     runs-on: ubuntu-latest
     steps:
+      - name: Print env
+        run: |
+          pwd
+          ls -la
       - name: Execute script
         run: ./my-script.sh
