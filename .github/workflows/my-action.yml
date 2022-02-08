@@ -31,7 +31,7 @@ jobs:
         run: |
           RESPONSE=$(curl -s -X GET \
             -H "Authorization: Basic $AUTH_TOKEN" \
-            "$API_PATH/wiki/rest/api/content/$confluence_page_id?expand=version,space")
+            "$API_PATH/wiki/rest/api/content/$CONFLUENCE_PAGE_ID?expand=version,space")
           PAGE_VERSION=$(jq -r '.version.number' <<<"$RESPONSE")
           SPACE=$(jq -r '.space.key' <<<"$RESPONSE")
           PAGE_TITLE=$(jq -r '.title' <<<"$RESPONSE")
