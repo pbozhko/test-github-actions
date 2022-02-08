@@ -19,19 +19,15 @@ jobs:
           submodules: true
       - name: Prepare content
         run: |
-          declare -a PERMITS_ARRAY
+          DATA_ROWS=""
+          INDEX="1"
           while read -r line; do
             if [[ ${#line} -gt 0 ]] && ! [[ "$line" =~ ^# ]]; then
               IFS=', ' read -r -a permit_line <<<"$line"
-              PERMITS_ARRAY+=("${permit_line[1]}" "${permit_line[3]}" "${permit_line[4]}")
+              DATA_ROWS+="<tr><td>$INDEX</td><td>${permit_line[0]}</td><td>${permit_line[1]}</td><td>${permit_line[2]}</td></tr>"
+              INDEX=$((INDEX+1))
             fi
           done <"$CASBINCSV_CONFIG_FILE"
-          DATA_ROWS=""
-          INDEX="1"
-          for i in ${PERMITS_ARRAY[@]}; do
-            DATA_ROWS+="<tr><td>$INDEX</td><td>${i[0]}</td><td>${i[1]}</td><td>${i[2]}</td></tr>";
-            INDEX=$((INDEX+1))
-          done
           HEADER_ROW="<tr><th>#<b></b></th><th><b>Role</b></th><th><b>Scope</b></th><th><b>Permit</b></th></tr>"
           TABLE_CONTENT="<table><thead>$HEADER_ROW</thead><tbody>$DATA_ROWS</tbody></table>"
           echo "TABLE_CONTENT=$TABLE_CONTENT" >> $GITHUB_ENV
