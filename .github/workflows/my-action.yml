@@ -26,7 +26,7 @@ jobs:
               PERMITS_ARRAY+=("${permit_line[1]}" "${permit_line[3]}" "${permit_line[4]}")
             fi
           done <"$CASBINCSV_CONFIG_FILE"
-          echo "PERMITS_ARRAY=$PERMITS_ARRAY" >> $GITHUB_ENV
+          echo "PERMITS_ARRAY=${PERMITS_ARRAY[@]}" >> $GITHUB_ENV
       - name: Get current page info
         run: |
           RESPONSE=$(curl -s -X GET \
