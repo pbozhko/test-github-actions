@@ -1,4 +1,4 @@
-name: "Update-roles-and-permissions-docs"
+name: "2-Update-roles-and-permissions-docs"
 
 on:
   workflow_dispatch:
