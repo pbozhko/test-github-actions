@@ -37,10 +37,12 @@ jobs:
           # Pass to the next steps
           echo "TABLE_CONTENT=$TABLE_CONTENT" >> $GITHUB_ENV
       - name: Get current page info
+        env:
+          CONFLUENCE_TOKEN: ${{ secrets.CONFLUENCE_TOKEN }}
         run: |
           # Get current page info. Space and title are required for update request. New page version also must be incremented manually 
           RESPONSE=$(curl -s -X GET \
-            -H "Authorization: Bearer ${{ secret.CONFLUENCE_TOKEN }}" \
+            -H "Authorization: Bearer $CONFLUENCE_TOKEN" \
             "$API_PATH/rest/api/content/$CONFLUENCE_PAGE_ID?expand=version,space")
           
           PAGE_VERSION=$(jq -r '.version.number' <<<"$RESPONSE")
@@ -53,9 +55,11 @@ jobs:
           echo "SPACE=$SPACE" >> $GITHUB_ENV
           echo "PAGE_TITLE=$PAGE_TITLE" >> $GITHUB_ENV
       - name: Update page
+        env:
+          CONFLUENCE_TOKEN: ${{ secrets.CONFLUENCE_TOKEN }}
         run: |
           curl -X PUT \
-            -H "Authorization: Bearer ${{ secret.CONFLUENCE_TOKEN }}" \
+            -H "Authorization: Bearer $CONFLUENCE_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
                       \"id\":\"$CONFLUENCE_PAGE_ID\",
